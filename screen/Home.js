@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {StatusBar, Dimensions} from 'react-native';
+import { StatusBar, Dimensions } from 'react-native';
 
 import styled from 'styled-components/native';
 
@@ -26,7 +26,6 @@ const Poster = styled.ImageBackground`
 `;
 
 
-
 /**
  * Utilizando a biblioteca react-spring
  * Anime o componente Post para que ele desapareça assim que essa tela for construida.
@@ -43,8 +42,8 @@ const Home = () => {
       />
       <Container>
         <Poster source={require('../assets/poster.jpg')}>
-            <Header />
-            <Hero />
+          <Header />
+          <Hero />
         </Poster>
         <Movies label="Recomendados" item={api} />
         <Movies label="Top 10" item={api} />

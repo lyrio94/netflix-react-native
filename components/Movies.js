@@ -1,6 +1,6 @@
-import React from 'react';
-import {Dimensions} from 'react-native';
-
+import React, { useState } from 'react';
+import { Dimensions, TouchableWithoutFeedback } from 'react-native';
+import { useSpring, animated } from 'react-spring';
 import styled from 'styled-components/native';
 
 const Container = styled.View`
@@ -21,6 +21,8 @@ const MoviePoster = styled.Image`
   height: 150px;
 `;
 
+const AnimatedMoviePoster = animated(MoviePoster);
+
 const MovieCard = styled.View`
   padding-right: 9px;
 `;
@@ -34,15 +36,34 @@ const MovieCard = styled.View`
  * O item 2 deve desaparecer em 2 segundos....
  */
 
-const Movies = ({label, item}) => {
+const Movies = ({ label, item }) => {
+
+  const [pressed, setPressed] = useState(null)
+
+  const translate = useSpring({
+    to: {
+      scale: 1.1,
+    },
+    from: {
+      scale: 1,
+    },
+
+  });
+
   return (
     <Container>
       <Label>{label}</Label>
       <MovieScroll horizontal>
-        {item.map((movie, item) => {
+        {item.map((movie, index) => {
           return (
-            <MovieCard key={String(item)}>
-              <MoviePoster resizeMode="cover" source={movie} />
+            <MovieCard key={String(index)}>
+              <TouchableWithoutFeedback
+                onPressIn={() => { setPressed(index) }}
+                onPressOut={() => { setPressed(null) }}
+              >
+                <AnimatedMoviePoster style={pressed === index ? { transform: [translate] } : null}
+                  resizeMode="cover" source={movie} />
+              </TouchableWithoutFeedback>
             </MovieCard>
           );
         })}
