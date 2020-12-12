@@ -30,7 +30,7 @@ const MovieCard = styled.View`
   padding-left: 0px;
 `;
 
-const Movies = ({label, item}) => {
+const Movies = ({label, data}) => {
   const [pressing, setPressedIn] = useState({pressed: false});
 
   const translate = useSpring({
@@ -46,7 +46,7 @@ const Movies = ({label, item}) => {
     <Container>
       <Label>{label}</Label>
       <MovieScroll horizontal>
-        {item.map((movie, index) => {
+        {data.map((movie, index) => {
           return (
             <MovieCard key={String(index)}>
               <TouchableWithoutFeedback
@@ -61,7 +61,7 @@ const Movies = ({label, item}) => {
                     index === pressing.index ? {transform: [translate]} : null
                   }
                   resizeMode="cover"
-                  source={movie}
+                  source={{uri: movie.Poster}}
                 />
               </TouchableWithoutFeedback>
             </MovieCard>

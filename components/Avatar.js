@@ -1,7 +1,7 @@
-import React from 'react';
-import {View} from 'react-native';
-import {MaterialIcons} from '@expo/vector-icons';
-import styled, {css} from 'styled-components/native';
+import React from "react";
+import { View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import styled, { css } from "styled-components/native";
 
 const Container = styled.TouchableOpacity`
   flex-direction: column;
@@ -10,10 +10,9 @@ const Container = styled.TouchableOpacity`
 
 const avatarSize = css`
   width: ${(props) => {
-    console.log('avatarSize', props);
-    return props.big ? '100px' : '60px';
+    return props.big ? "100px" : "60px";
   }};
-  height: ${(props) => (props.big ? '100px' : '60px')};
+  height: ${(props) => (props.big ? "100px" : "60px")};
   margin: 10px;
 `;
 
@@ -51,14 +50,13 @@ const Editable = (props) => {
 };
 
 const Avatar = (props) => {
-  console.log('avatar', props);
   return (
-    <Container style={{alignItems: 'center'}} onPress={props.onPress}>
+    <Container style={{ alignItems: "center" }} onPress={props.onPress}>
       {props.uri ? (
         <View>
           <AvatarIcon
             big={props.big}
-            source={{isStatic: true, uri: props.uri}}
+            source={{ isStatic: true, uri: props.uri }}
           />
           <Editable edit={props.edit} {...props} />
         </View>
