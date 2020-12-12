@@ -1,6 +1,8 @@
 import React from 'react';
 
-import { StatusBar, Dimensions } from 'react-native';
+import {StatusBar, Dimensions} from 'react-native';
+
+import {LinearGradient} from 'expo-linear-gradient';
 
 import styled from 'styled-components/native';
 
@@ -9,10 +11,10 @@ import Hero from '../components/Hero';
 import Movies from '../components/Movies';
 
 const api = [
-  require('../assets/movie1.jpg'),
-  require('../assets/movie2.jpg'),
-  require('../assets/movie3.jpg'),
-  require('../assets/movie4.jpg'),
+  require('../assets/movies/movie1.jpg'),
+  require('../assets/movies/movie2.jpg'),
+  require('../assets/movies/movie3.jpg'),
+  require('../assets/movies/movie4.jpg'),
 ];
 
 const Container = styled.ScrollView`
@@ -25,12 +27,9 @@ const Poster = styled.ImageBackground`
   height: ${(Dimensions.get('window').height * 81) / 100}px;
 `;
 
-
-/**
- * Utilizando a biblioteca react-spring
- * Anime o componente Post para que ele desapareça assim que essa tela for construida.
- * Leve a opacidade dele de 1 para 0 em 3 segundos.
- */
+const Gradient = styled(LinearGradient)`
+  height: 100%;
+`;
 
 const Home = () => {
   return (
@@ -42,8 +41,17 @@ const Home = () => {
       />
       <Container>
         <Poster source={require('../assets/poster.jpg')}>
-          <Header />
-          <Hero />
+          <Gradient
+            locations={[0, 0.2, 0.6, 0.93]}
+            colors={[
+              'rgba(0,0,0,0.5)',
+              'rgba(0,0,0,0.0)',
+              'rgba(0,0,0,0.0)',
+              'rgba(0,0,0,1)',
+            ]}>
+            <Header />
+            <Hero />
+          </Gradient>
         </Poster>
         <Movies label="Recomendados" item={api} />
         <Movies label="Top 10" item={api} />
