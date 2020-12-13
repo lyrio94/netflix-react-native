@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 import Avatar from "../components/Avatar";
-import Icon from "react-native-vector-icons/MaterialIcons";
-import ProfileContext from "../context/ProfileContext";
+import { MaterialIcons } from "@expo/vector-icons";
+import { ProfileContext } from "../context/ProfileContext";
 
 const Screen = styled.View`
   flex: 1;
@@ -64,6 +64,37 @@ let profilesAvailables = [
     uri: null,
   },
 ];
+useEffect(() => {
+  GetLocation()
+    .then((info) => {
+      setPosition(info);
+    })
+    .catch(() => setPosition(null));
+}, []);
+
+useEffect(() => {
+  const getNationalMovies = async () => {
+    if (position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      const country = await GetCountry({ lat, lng });
+      console.log("country", country);
+
+      const filteredMovies = movies.filter((item, index) => {
+        return item.Country.indexOf(country) !== -1;
+      });
+      setNationalMovies(filteredMovies);
+    }
+  };
+  getNationalMovies();
+}, [position]);
+
+useEffect(() => {
+  const data = require("../assets/Movies.json");
+  setMovies(data);
+}, []);
+
 
 const replaceAvatarsWithImage = (props, profilesAvailables) => {
   if (props.route?.params?.name) {
@@ -84,8 +115,7 @@ const replaceAvatarsWithImage = (props, profilesAvailables) => {
 };
 
 const selectProfile = (navigation, item) => {
-  console.log("Navega para home com esses parametros", item.name);
-  navigation.navigate("Home");
+  navigation.navigate("Home", { name: item.name });
 };
 
 const editProfile = (navigation, profiles) => {
@@ -97,7 +127,7 @@ const More = (props) => {
 
   return (
     <ProfileContext.Consumer>
-      {({ user, changeUser }) => {
+      {({ user, newUser }) => {
         return (
           <Screen>
             <AvantarsContainer>
@@ -110,8 +140,8 @@ const More = (props) => {
                       uri={item.uri}
                       name={item.name}
                       onPress={() => {
-                        changeUser(item.name)
-                        selectProfile(props.navigation, item)
+                        newUser(item.name);
+                        selectProfile(props.navigation, item);
                       }}
                     />
                   );
@@ -121,7 +151,7 @@ const More = (props) => {
             <NetflixButton
               onPress={() => editProfile(props.navigation, profilesAvailables)}
             >
-              <Icon name="edit" size={24} color="gray" />
+              <MaterialIcons name="edit" size={24} color="gray" />
               <ButtonLabel>Gerenciar perfis</ButtonLabel>
             </NetflixButton>
           </Screen>
@@ -132,4 +162,3 @@ const More = (props) => {
 };
 
 export default More;
-

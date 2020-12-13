@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Geolocation from "@react-native-community/geolocation";
 import Geocoder from "react-native-geocoder";
-
 import { StatusBar, Dimensions } from "react-native";
-
 import styled from "styled-components/native";
-
+import { ProfileContext } from "../context/ProfileContext";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Movies from "../components/Movies";
-
-import ProfileCntext from "../Context/profileContext";
-
+import { filterByCountry, getLocation } from "../services/movieFilter";
 import { GetLocation, GetCountry } from "../utils/Location";
 
 const api = [
-  require("../assets/movie1.jpg"),
-  require("../assets/movie2.jpg"),
-  require("../assets/movie3.jpg"),
-  require("../assets/movie4.jpg"),
+  require("../assets/movies/movie1.jpg"),
+  require("../assets/movies/movie2.jpg"),
+  require("../assets/movies/movie3.jpg"),
+  require("../assets/movies/movie4.jpg"),
 ];
 
 const Container = styled.ScrollView`
@@ -85,8 +81,8 @@ const Home = (props) => {
   );
 
   return (
-    <ProfileCntext.Consumer>
-      {({ user, changeUser }) => {
+    <ProfileContext.Consumer>
+      {({ user }) => {
         let movieToResume = [];
         if (user) {
           const data = require("../assets/moviesToResume.json");
@@ -115,7 +111,7 @@ const Home = (props) => {
           </>
         );
       }}
-    </ProfileCntext.Consumer>
+    </ProfileContext.Consumer>
   );
 };
 
