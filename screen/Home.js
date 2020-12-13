@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { StatusBar, Dimensions } from "react-native";
 import Geolocation from "@react-native-community/geolocation";
 import Geocoder from "react-native-geocoder";
-import { StatusBar, Dimensions } from "react-native";
 import styled from "styled-components/native";
 import { ProfileContext } from "../context/ProfileContext";
 import Header from "../components/Header";
@@ -32,11 +32,16 @@ const Home = (props) => {
   const [position, setPosition] = useState(null);
 
   useEffect(() => {
-    GetLocation()
-      .then((info) => {
-        setPosition(info);
-      })
-      .catch(() => setPosition(null));
+    const obtainLocation = async () => {
+      try {
+        const result = await getLocation();
+        setPosition(result);
+      } catch (error) {
+        console.log("obtainLocation error", error);
+      }
+    };
+
+    obtainLocation();
   }, []);
 
   useEffect(() => {

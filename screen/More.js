@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react'
 import styled from "styled-components/native";
 import Avatar from "../components/Avatar";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -64,36 +63,6 @@ let profilesAvailables = [
     uri: null,
   },
 ];
-useEffect(() => {
-  GetLocation()
-    .then((info) => {
-      setPosition(info);
-    })
-    .catch(() => setPosition(null));
-}, []);
-
-useEffect(() => {
-  const getNationalMovies = async () => {
-    if (position) {
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-
-      const country = await GetCountry({ lat, lng });
-      console.log("country", country);
-
-      const filteredMovies = movies.filter((item, index) => {
-        return item.Country.indexOf(country) !== -1;
-      });
-      setNationalMovies(filteredMovies);
-    }
-  };
-  getNationalMovies();
-}, [position]);
-
-useEffect(() => {
-  const data = require("../assets/Movies.json");
-  setMovies(data);
-}, []);
 
 
 const replaceAvatarsWithImage = (props, profilesAvailables) => {
@@ -124,6 +93,37 @@ const editProfile = (navigation, profiles) => {
 
 const More = (props) => {
   replaceAvatarsWithImage(props, profilesAvailables);
+
+  useEffect(() => {
+    GetLocation()
+      .then((info) => {
+        setPosition(info);
+      })
+      .catch(() => setPosition(null));
+  }, []);
+
+  useEffect(() => {
+    const getNationalMovies = async () => {
+      if (position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        const country = await GetCountry({ lat, lng });
+        console.log("country", country);
+
+        const filteredMovies = movies.filter((item, index) => {
+          return item.Country.indexOf(country) !== -1;
+        });
+        setNationalMovies(filteredMovies);
+      }
+    };
+    getNationalMovies();
+  }, [position]);
+
+  useEffect(() => {
+    const data = require("../assets/Movies.json");
+    setMovies(data);
+  }, []);
 
   return (
     <ProfileContext.Consumer>
