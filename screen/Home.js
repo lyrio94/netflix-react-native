@@ -7,7 +7,6 @@ import { ProfileContext } from "../context/ProfileContext";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Movies from "../components/Movies";
-import { filterByCountry, getLocation } from "../services/movieFilter";
 import { GetLocation, GetCountry } from "../utils/Location";
 
 const api = [
