@@ -4,7 +4,6 @@ import messaging from '@react-native-firebase/messaging';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ProfileContext } from './context/ProfileContext'
-import { name as appName } from './app.json';
 import Tabs from './routes/Tabs'
 import ProfileToEdit from './screen/ProfileToEdit'
 import ChooseIcon from './screen/ChooseIcon'
@@ -13,7 +12,7 @@ import { configureLanguageToI18n } from './languages/utils'
 
 const Stack = createStackNavigator();
 
-const AppNetflix = () => {
+const App = () => {
 
   useEffect(() => {
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -53,7 +52,6 @@ const AppNetflix = () => {
     </ProfileContext.Provider>
   )
 }
-AppRegistry.registerComponent(appName, () => AppNetflix);
-export default AppNetflix;
+export default App;
 
 

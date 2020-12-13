@@ -1,8 +1,8 @@
 {
-  "main": "com.netflix",
+  "main": "Netflix",
   "expo": {
-    "name": "com.netflix",
-    "slug": "com.netflix",
+    "name": "Netflix",
+    "slug": "Netflix",
     "platforms": [
       "ios",
       "android",
