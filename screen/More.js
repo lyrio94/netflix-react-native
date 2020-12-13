@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components/native";
 import Avatar from "../components/Avatar";
-import { MaterialIcons } from "@expo/vector-icons";
-import { ProfileContext } from "../context/ProfileContext";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import ProfileContext from "../context/ProfileContext";
 
 const Screen = styled.View`
   flex: 1;
@@ -84,7 +84,8 @@ const replaceAvatarsWithImage = (props, profilesAvailables) => {
 };
 
 const selectProfile = (navigation, item) => {
-  navigation.navigate("Home", { name: item.name });
+  console.log("Navega para home com esses parametros", item.name);
+  navigation.navigate("Home");
 };
 
 const editProfile = (navigation, profiles) => {
@@ -96,7 +97,7 @@ const More = (props) => {
 
   return (
     <ProfileContext.Consumer>
-      {({ user, newUser }) => {
+      {({ user, changeUser }) => {
         return (
           <Screen>
             <AvantarsContainer>
@@ -109,8 +110,8 @@ const More = (props) => {
                       uri={item.uri}
                       name={item.name}
                       onPress={() => {
-                        newUser(item.name);
-                        selectProfile(props.navigation, item);
+                        changeUser(item.name)
+                        selectProfile(props.navigation, item)
                       }}
                     />
                   );
@@ -120,7 +121,7 @@ const More = (props) => {
             <NetflixButton
               onPress={() => editProfile(props.navigation, profilesAvailables)}
             >
-              <MaterialIcons name="edit" size={24} color="gray" />
+              <Icon name="edit" size={24} color="gray" />
               <ButtonLabel>Gerenciar perfis</ButtonLabel>
             </NetflixButton>
           </Screen>
@@ -131,3 +132,4 @@ const More = (props) => {
 };
 
 export default More;
+

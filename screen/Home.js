@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
+import Geolocation from "@react-native-community/geolocation";
+import Geocoder from "react-native-geocoder";
 
 import { StatusBar, Dimensions } from "react-native";
-
-import { LinearGradient } from "expo-linear-gradient";
 
 import styled from "styled-components/native";
 
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Movies from "../components/Movies";
-import { filterByCountry, getLocation } from "../services/movieFilter";
-import { ProfileContext } from "../context/ProfileContext";
+
+import ProfileCntext from "../Context/profileContext";
+
+import { GetLocation, GetCountry } from "../utils/Location";
+
+const api = [
+  require("../assets/movie1.jpg"),
+  require("../assets/movie2.jpg"),
+  require("../assets/movie3.jpg"),
+  require("../assets/movie4.jpg"),
+];
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -22,87 +31,91 @@ const Poster = styled.ImageBackground`
   height: ${(Dimensions.get("window").height * 81) / 100}px;
 `;
 
-const Gradient = styled(LinearGradient)`
-  height: 100%;
-`;
-
-const Home = () => {
+const Home = (props) => {
   const [movies, setMovies] = useState([]);
   const [nationalMovies, setNationalMovies] = useState([]);
   const [position, setPosition] = useState(null);
 
   useEffect(() => {
-    const obtainLocation = async () => {
-      try {
-        const result = await getLocation();
-        setPosition(result);
-      } catch (error) {
-        console.log("obtainLocation error", error);
-      }
-    };
-
-    obtainLocation();
+    GetLocation()
+      .then((info) => {
+        setPosition(info);
+      })
+      .catch(() => setPosition(null));
   }, []);
 
   useEffect(() => {
-    const loadingMovies = async () => {
-      const moviesJson = require("../assets/Movies.json");
-      let nationalMovies = [];
+    const getNationalMovies = async () => {
+      if (position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
 
-      try {
-        if (position !== null) {
-          nationalMovies = await filterByCountry(moviesJson, position);
-          setNationalMovies(nationalMovies);
-        }
-      } catch (error) {
-        console.log(error);
+        const country = await GetCountry({ lat, lng });
+        console.log("country", country);
+
+        const filteredMovies = movies.filter((item, index) => {
+          return item.Country.indexOf(country) !== -1;
+        });
+        setNationalMovies(filteredMovies);
       }
-
-      const nationalMoviesTitles = nationalMovies.map((item) => item.Title);
-
-      moviesWithoutNationals = moviesJson.filter((item, index) => {
-        return !nationalMoviesTitles.includes(item.Title);
-      });
-
-      setMovies(moviesWithoutNationals);
     };
-    loadingMovies();
+    getNationalMovies();
   }, [position]);
 
+  useEffect(() => {
+    const data = require("../assets/Movies.json");
+    setMovies(data);
+  }, []);
+
+  console.log("position", position);
+
+  const onObtainPosition = (position) => {
+    console.log("position", position);
+    const pos = {
+      lat: position.coords.latitude,
+      long: position.coords.longitude,
+    };
+    Geocoder.geocodePosition(pos).then((res) => {
+      console.log(res);
+    });
+  };
+
+  Geolocation.getCurrentPosition(onObtainPosition, (error) =>
+    console.error(error)
+  );
+
   return (
-    <ProfileContext.Consumer>
-      {({ user }) => (
-        <>
-          <StatusBar
-            translucent
-            backgroundColor="transparent"
-            barStyle="light-content"
-          />
-          <Container>
-            <Poster source={require("../assets/poster.jpg")}>
-              <Gradient
-                locations={[0, 0.2, 0.6, 0.93]}
-                colors={[
-                  "rgba(0,0,0,0.5)",
-                  "rgba(0,0,0,0.0)",
-                  "rgba(0,0,0,0.0)",
-                  "rgba(0,0,0,1)",
-                ]}
-              >
+    <ProfileCntext.Consumer>
+      {({ user, changeUser }) => {
+        let movieToResume = [];
+        if (user) {
+          const data = require("../assets/moviesToResume.json");
+          movieToResume = data[user];
+        }
+        return (
+          <>
+            <StatusBar
+              translucent
+              backgroundColor="transparent"
+              barStyle="light-content"
+            />
+            <Container>
+              <Poster source={require("../assets/poster.jpg")}>
                 <Header />
                 <Hero />
-              </Gradient>
-            </Poster>
-            <Movies label={`Continuar assistindo ${user}`} data={movies} />
-            <Movies label="Recomendados" data={movies} />
-            <Movies label="Top 10" data={movies} />
-            {nationalMovies && nationalMovies.length > 0 && (
+              </Poster>
+              <Movies
+                label={`Continuar assistindo como ${user}`}
+                data={nationalMovies}
+              />
               <Movies label="Nacionais" data={nationalMovies} />
-            )}
-          </Container>
-        </>
-      )}
-    </ProfileContext.Consumer>
+              <Movies label="Recomendados" data={movies} />
+              <Movies label="Top 10" data={movies} />
+            </Container>
+          </>
+        );
+      }}
+    </ProfileCntext.Consumer>
   );
 };
 
