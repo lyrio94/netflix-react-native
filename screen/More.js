@@ -1,6 +1,8 @@
+import React from "react";
 import styled from "styled-components/native";
 import Avatar from "../components/Avatar";
-import { MaterialIcons } from "@expo/vector-icons";
+import { View } from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import { ProfileContext } from "../context/ProfileContext";
 
 const Screen = styled.View`
@@ -8,7 +10,7 @@ const Screen = styled.View`
   background-color: #000;
   flex-direction: column;
   padding: 10px;
-  justify-content: center;
+  justify-content: center; 
 `;
 
 const AvantarsContainer = styled.View`
@@ -64,7 +66,6 @@ let profilesAvailables = [
   },
 ];
 
-
 const replaceAvatarsWithImage = (props, profilesAvailables) => {
   if (props.route?.params?.name) {
     profilesAvailables.map((item) => {
@@ -84,7 +85,8 @@ const replaceAvatarsWithImage = (props, profilesAvailables) => {
 };
 
 const selectProfile = (navigation, item) => {
-  navigation.navigate("Home", { name: item.name });
+  console.log("Navega para home com esses parametros", item.name);
+  navigation.navigate("Home");
 };
 
 const editProfile = (navigation, profiles) => {
@@ -94,40 +96,9 @@ const editProfile = (navigation, profiles) => {
 const More = (props) => {
   replaceAvatarsWithImage(props, profilesAvailables);
 
-  useEffect(() => {
-    GetLocation()
-      .then((info) => {
-        setPosition(info);
-      })
-      .catch(() => setPosition(null));
-  }, []);
-
-  useEffect(() => {
-    const getNationalMovies = async () => {
-      if (position) {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-
-        const country = await GetCountry({ lat, lng });
-        console.log("country", country);
-
-        const filteredMovies = movies.filter((item, index) => {
-          return item.Country.indexOf(country) !== -1;
-        });
-        setNationalMovies(filteredMovies);
-      }
-    };
-    getNationalMovies();
-  }, [position]);
-
-  useEffect(() => {
-    const data = require("../assets/Movies.json");
-    setMovies(data);
-  }, []);
-
   return (
     <ProfileContext.Consumer>
-      {({ user, newUser }) => {
+      {({ user, changeUser }) => {
         return (
           <Screen>
             <AvantarsContainer>
@@ -140,8 +111,8 @@ const More = (props) => {
                       uri={item.uri}
                       name={item.name}
                       onPress={() => {
-                        newUser(item.name);
-                        selectProfile(props.navigation, item);
+                        changeUser(item.name)
+                        selectProfile(props.navigation, item)
                       }}
                     />
                   );
@@ -151,7 +122,7 @@ const More = (props) => {
             <NetflixButton
               onPress={() => editProfile(props.navigation, profilesAvailables)}
             >
-              <MaterialIcons name="edit" size={24} color="gray" />
+              <Icon name="edit" size={24} color="gray" />
               <ButtonLabel>Gerenciar perfis</ButtonLabel>
             </NetflixButton>
           </Screen>
